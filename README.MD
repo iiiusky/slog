@@ -18,29 +18,21 @@ env中如有XDEBUG字段且值不为空，日志将会在控制台输出以及�
 
 示例日志使用代码:
 ```
+package xxxx
+
 import (
+	"fmt"
 	"github.com/iiiusky/slog"
 	"go.uber.org/zap"
+	"strings"
 )
-
-var (
-	debugMode bool
-	AppName   string
-)
-
-func SetLogger(appName, isDebug string) {
-	if isDebug != "" {
-		debugMode = true
-	}
-	AppName = appName
-}
 
 // 普通日志
 func Logger() *zap.Logger {
 	return slog.Logger(&slog.SLoggerSetting{
-		AppName:    AppName,
-		Path:       "./",
-		IsDebug:    debugMode,
+		AppName:    strings.ToLower(AppName),
+		Path:       LogPath,
+		IsDebug:    LogDebug,
 		CallerSkip: 1,
 	})
 }
@@ -51,32 +43,58 @@ func ErrorLog(errorCode int, msg string, err error) {
 }
 
 func DebugF(msg string, args ...interface{}) {
-	if debugMode {
-		Logger().Debug(fmt.Sprintf(msg, args))
-	}
+	Logger().Debug(fmt.Sprintf(msg, args...))
+}
+
+func Debug(msg string, fields ...zap.Field) {
+	Logger().Debug(msg, fields...)
 }
 
 func InfoF(msg string, args ...interface{}) {
-	Logger().Info(fmt.Sprintf(msg, args))
+	Logger().Info(fmt.Sprintf(msg, args...))
+}
+
+func Info(msg string, fields ...zap.Field) {
+	Logger().Info(msg, fields...)
 }
 
 func WarnF(msg string, args ...interface{}) {
-	Logger().Warn(fmt.Sprintf(msg, args))
+	Logger().Warn(fmt.Sprintf(msg, args...))
+}
+
+func Warn(msg string, fields ...zap.Field) {
+	Logger().Warn(msg, fields...)
 }
 
 func ErrorF(msg string, args ...interface{}) {
-	Logger().Error(fmt.Sprintf(msg, args))
+	Logger().Error(fmt.Sprintf(msg, args...))
+}
+
+func Error(msg string, fields ...zap.Field) {
+	Logger().Error(msg, fields...)
 }
 
 func DPanicF(msg string, args ...interface{}) {
-	Logger().DPanic(fmt.Sprintf(msg, args))
+	Logger().DPanic(fmt.Sprintf(msg, args...))
+}
+
+func DPanic(msg string, fields ...zap.Field) {
+	Logger().DPanic(msg, fields...)
 }
 
 func PanicF(msg string, args ...interface{}) {
-	Logger().Panic(fmt.Sprintf(msg, args))
+	Logger().Panic(fmt.Sprintf(msg, args...))
+}
+
+func Panic(msg string, fields ...zap.Field) {
+	Logger().Panic(msg, fields...)
 }
 
 func FatalF(msg string, args ...interface{}) {
-	Logger().Fatal(fmt.Sprintf(msg, args))
+	Logger().Fatal(fmt.Sprintf(msg, args...))
+}
+
+func Fatal(msg string, fields ...zap.Field) {
+	Logger().Fatal(msg, fields...)
 }
 ```
